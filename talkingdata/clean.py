@@ -51,10 +51,10 @@ def load_all(data_path='/var/local/data/kaggle/2016-09-31-Talking-Data/'):
 def parse_group(s):
     """Return (gender: 0|1=F|M, minimum_age, maximum_age)
 
-    M=1,F=0, '22-'=(0, 22), '45+'=(45, 99)
+    M=1,F=0, '22-'=(0, 22), '43+'=(43, 99)
     """
     g, a0, sign, a1 = re.match('(F|M)([0-9]{2})([-+])([0-9]{0,2})', s).groups()
-    return (int(g == 'M'), int(a0 if a1 or sign == '+' else 0), int(a0 if not a1 and sign == '-' else a1))
+    return (int(g == 'M'), int(a0 if a1 or sign == '+' else 0), int(99 if sign == '+' else a0 if sign == '-' else a1))
 
 
 def make_group_vocab(groups):
@@ -62,7 +62,18 @@ def make_group_vocab(groups):
 
     >>> groups = 'M22- M29-31 M23-26 F24-26 F33-42 F27-28 F29-32 F43+ M32-38 F23- M39+ M27-28'.split()
     >>> make_group_vocab(groups)
-
+    {'F23-': (0, 0, 23),
+     'F24-26': (0, 24, 24),
+     'F27-28': (0, 27, 27),
+     'F29-32': (0, 29, 29),
+     'F33-42': (0, 33, 33),
+     'F43+': (0, 43, 99),
+     'M22-': (1, 0, 22),
+     'M23-26': (1, 23, 23),
+     'M27-28': (1, 27, 27),
+     'M29-31': (1, 29, 29),
+     'M32-38': (1, 32, 32),
+     'M39+': (1, 39, 99)}
     """
     return dict([(g, parse_group(g)) for g in set(groups)])
 
@@ -71,7 +82,7 @@ def make_vocab(texts, normalize=lambda x: str(x).lower().strip()):
     """Convert gender strings into integers and return translation dict
 
     >>> make_vocab(list('MFMMF'))
-    {'f': 0, 'm': 1}
+    {'M': 0, 'F': 1}
     """
     if callable(normalize):
         normalization = dict([(t, normalize(t)) for t in texts])

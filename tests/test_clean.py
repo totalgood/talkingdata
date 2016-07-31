@@ -11,6 +11,6 @@ __license__ = "mit"
 
 
 def test_clean():
-    assert doctest.testmod(talkingdata.clean, doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS)
+    assert doctest.testmod(talkingdata.clean, optionflags=doctest.NORMALIZE_WHITESPACE | doctest.ELLIPSIS).failed == 0
     # with pytest.raises(AssertionError):
     #     fib(-10)
