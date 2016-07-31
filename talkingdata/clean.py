@@ -61,19 +61,12 @@ def make_group_vocab(groups):
     """Parse gender plus min and max age from marketing cohorts/group strings and return a vocab dict
 
     >>> groups = 'M22- M29-31 M23-26 F24-26 F33-42 F27-28 F29-32 F43+ M32-38 F23- M39+ M27-28'.split()
-    >>> make_group_vocab(groups)
-    {'F23-': (0, 0, 23),
-     'F24-26': (0, 24, 24),
-     'F27-28': (0, 27, 27),
-     'F29-32': (0, 29, 29),
-     'F33-42': (0, 33, 33),
-     'F43+': (0, 43, 99),
-     'M22-': (1, 0, 22),
-     'M23-26': (1, 23, 23),
-     'M27-28': (1, 27, 27),
-     'M29-31': (1, 29, 29),
-     'M32-38': (1, 32, 32),
-     'M39+': (1, 39, 99)}
+    >>> (make_group_vocab(groups) ==
+    ...   {'M22-': (1, 0, 22), 'F24-26': (0, 24, 24), 'F33-42': (0, 33, 33),
+    ...    'F27-28': (0, 27, 27), 'M23-26': (1, 23, 23), 'F23-': (0, 0, 23),
+    ...    'M39+': (1, 39, 99), 'F43+': (0, 43, 99), 'F29-32': (0, 29, 29),
+    ...    'M27-28': (1, 27, 27), 'M32-38': (1, 32, 32), 'M29-31': (1, 29, 29)})
+    True
     """
     return dict([(g, parse_group(g)) for g in set(groups)])
 
@@ -81,10 +74,10 @@ def make_group_vocab(groups):
 def make_vocab(texts, normalize=lambda x: str(x).lower().strip()):
     """Convert gender strings into integers and return translation dict
 
-    >>> make_vocab(list('MFMMF'))
-    {'M': 0, 'F': 1}
+    >>> make_vocab(list('MFMMF')) == {'F': 0, 'M': 1}
+    True
     """
-    return dict([(t, i) for (i, t) in enumerate(set(texts))])
+    return dict([(t, i) for (i, t) in enumerate(sorted(set(texts)))])
     if callable(normalize):
         normalization = dict([(t, normalize(t)) for t in texts])
         vocab = make_vocab([normalize(t) for t in set(texts)], normalize=normalization)
