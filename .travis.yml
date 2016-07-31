@@ -18,7 +18,6 @@ addons:
       - git
       - python-pip
 install:
-  - sudo -s
   - source tests/travis_install.sh
   - pip install -r requirements.txt
 before_script:
