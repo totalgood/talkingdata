@@ -84,6 +84,7 @@ def make_vocab(texts, normalize=lambda x: str(x).lower().strip()):
     >>> make_vocab(list('MFMMF'))
     {'M': 0, 'F': 1}
     """
+    return dict([(t, i) for (i, t) in enumerate(set(texts))])
     if callable(normalize):
         normalization = dict([(t, normalize(t)) for t in texts])
         vocab = make_vocab([normalize(t) for t in set(texts)], normalize=normalization)
