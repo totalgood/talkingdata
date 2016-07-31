@@ -30,6 +30,7 @@ if [[ "$DISTRIB" == "conda" ]]; then
 
 elif [[ "$DISTRIB" == "ubuntu" ]]; then
     # Use standard ubuntu packages in their default version
+    apt-get install python-pandas
 fi
 
 if [[ "$COVERAGE" == "true" ]]; then
