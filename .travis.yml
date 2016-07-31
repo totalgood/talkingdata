@@ -2,7 +2,7 @@
 # Read more under http://docs.travis-ci.com/user/build-configuration/
 # THIS SCRIPT IS SUPPOSED TO BE AN EXAMPLE. MODIFY IT ACCORDING TO YOUR NEEDS!
 
-sudo: false
+sudo: true
 language: python
 virtualenv:
   system_site_packages: true
@@ -18,7 +18,7 @@ addons:
       - git
       - python-pip
 install:
-  - sudo ./tests/travis_install.sh
+  - source /tests/travis_install.sh
   - pip install -r requirements.txt
 before_script:
   - git config --global user.email "you@example.com"
