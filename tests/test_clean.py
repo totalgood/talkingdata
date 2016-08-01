@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # import pytest
+"""Run doctests and unittests for talkingdata.clean module"""
 
 import doctest
 import talkingdata.clean
