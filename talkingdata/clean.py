@@ -9,8 +9,15 @@ import six
 
 import pandas as pd
 
+from .constant import DATA_DIR
 
-def load_all(data_path='/var/local/data/kaggle/2016-09-31-Talking-Data/'):
+
+def run():
+    tables = load_all()
+    return clean_all(*tables)
+
+
+def load_all(data_path=DATA_DIR):
     """Load all data tables into Pandas DataFrames"""
     data_path = data_path.rstrip('/') + '/'
 
@@ -37,7 +44,6 @@ def load_all(data_path='/var/local/data/kaggle/2016-09-31-Talking-Data/'):
     # gender age group (gender+age_group)
     train = pd.read_csv(data_path + 'gender_age_train.csv.zip', index_col='device_id')
 
-    train['gender'] = (train.gender == 'M').astype(pd.np.int8)
     # groups = list(set(train.group))
     # groups = [re.match('(F|M)([0-9]{2})([-+])([0-9]{0,2})', g).groups() for g in groups]
     # groups = [(int(g == 'M'), int(a0 if a1 or sign == '+' else 0), int(a0 if not a1 and sign == '-' else a1))
@@ -45,6 +51,20 @@ def load_all(data_path='/var/local/data/kaggle/2016-09-31-Talking-Data/'):
 
     test = pd.read_csv(data_path + 'gender_age_test.csv.zip', index_col='device_id')
 
+    return app_labels, events, app_events, phone, label_categories, train, test
+
+
+def clean_all(app_labels, events, app_events, phone, label_categories, train, test):
+    """Normalize/vectorize data types and values to be more RAM efficient"""
+    train['gender'] = (train.gender == 'M').astype(pd.np.int8)
+    groups = pd.DataFrame([parse_group(g) for g in train.group],
+                          columns=['gender', 'min_age', 'max_age'],
+                          index=train.index).astype(pd.np.int8)
+    num_inconsistent = sum(~(groups.gender == train.gender))
+    assert num_inconsistent == 0, "There were {} inconsistent genders in the groups and gender columns".format(num_inconsistent)
+    assert (groups.min_age < groups.max_age).all(), "Not all min_age values were less than max_age!"
+    del train['groups']
+    train['min_age'] = groups.min_age, groups.max_age
     return app_labels, events, app_events, phone, label_categories, train, test
 
 
