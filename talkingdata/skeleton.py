@@ -22,6 +22,7 @@ import sys
 import logging
 
 from talkingdata import __version__
+from six.moves import range
 
 __author__ = "Hobson Lane"
 __copyright__ = "Hobson Lane"
