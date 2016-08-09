@@ -16,6 +16,13 @@ def run():
     tables = load_all()
     return clean_all(*tables)
 
+def most_frequent(df, category_label='category', index_label='device_id'):
+    """Return a Series with the most frequent categorical value from the indicated column"""
+    most_freq = []
+    devices = list(set(df[index_label])]
+    for i in devices:
+        most_freq += max(((v, k) for (k, v) in Counter(df[df[index_label] == i][category_label]).items()))[-1]
+    return pd.Series(most_freq, index=devices, name='most_frequent_' + category_label)
 
 def load_all(data_path=DATA_DIR):
     """Load all data tables into Pandas DataFrames"""
